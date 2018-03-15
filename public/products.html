@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Shopping</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 50px;
+      border-radius: 0;
+    }
+    
+    /* Remove the jumbotron's default bottom margin */ 
+     .jumbotron {
+        background-color: #FFFFFF;
+        margin-bottom: 0;
+    }
+   
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+    
+    a {
+      color: white;
+    }
+    
+    a:hover {
+	    cursor: default;
+    }
+    
+    button {
+      width: 150px;
+      height: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron">
+  <div class="container text-center"> <!-- Company Images -->
+    <img src="/img/logo.png" alt="">
+  </div>
+    <p style="text-align:center">Ordering System</p>
+</div>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand">Inner Banks Paint & Decorating</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" style="cursor: pointer;"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<form action="/products" method="POST">
+<div class="container">
+  <h1>Select Your Products</h1>
+  <hr>
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Aura® Waterborne Interior Paint</div>
+        <div class="panel-body" ><img src="/img/paint/p65587.png" alt=""></div>
+        <div class="panel-footer">
+          <select name="p65587" class="form-control" id="Qty">
+            <option value="QTY">Please Select Quantity</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Aura® Waterborne Exterior Paint</div>
+          <div class="panel-body" ><img src="/img/paint/p65588.png" alt=""></div>
+          <div class="panel-footer">
+            <select name="p65588" class="form-control" id="Qty">
+              <option value="QTY">Please Select Quantity</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Aura® Grand Entrance® Door & Trim Enamel</div>
+          <div class="panel-body" ><img src="/img/paint/p65589.png" alt=""></div>
+          <div class="panel-footer">
+            <select name="p65589" class="form-control" id="Qty">
+              <option value="QTY">Please Select Quantity</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Regal® Select Waterborne Interior Paint</div>
+          <div class="panel-body" ><img src="/img/paint/p65590.png" alt=""></div>
+          <div class="panel-footer">
+            <select name="p65590" class="form-control" id="Qty">
+              <option value="QTY">Please Select Quantity</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+          </select>
+          </div>
+        </div>
+      </div>
+  </div>
+</div><br>
+
+<div class="container">    
+  <div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Regal® Select Exterior</div>
+          <div class="panel-body" ><img src="/img/paint/p65591.png" alt=""></div>
+          <div class="panel-footer">
+            <select name="p65591" class="form-control" id="Qty">
+              <option value="QTY">Please Select Quantity</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">Regal® Select Exterior High Build</div>
+            <div class="panel-body" ><img src="/img/paint/p65592.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p65592" class="form-control" id="Qty">
+                <option value="QTY">Please Select Quantity</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">Benjamin Moore Natura® Premium Interior Paint</div>
+            <div class="panel-body" ><img src="/img/paint/p69740.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p69740" class="form-control" id="Qty">
+                <option value="QTY">Please Select Quantity</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">Ben® Interior</div>
+            <div class="panel-body" ><img src="/img/paint/p65593.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p65593" class="form-control" id="Qty">
+                <option value="QTY">Please Select Quantity</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+  </div>
+</div><br><br>
+
+<div class="container">    
+    <div class="row">
+      <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">Studio Finishes®</div>
+            <div class="panel-body" ><img src="/img/paint/p65585.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p65585" class="form-control" id="Qty">
+                <option value="QTY">Please Select Quantity</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Fresh Start</div>
+              <div class="panel-body" ><img src="/img/paint/p65586.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65586" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Sure Seal Latex Primers</div>
+              <div class="panel-body" ><img src="/img/paint/p65684.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65684" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Ultra Spec HP® DTM Acrylic Enamels</div>
+              <div class="panel-body" ><img src="/img/paint/p65683.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65683" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div><br><br>
+
+  <div class="container">    
+    <div class="row">
+      <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">ADVANCE Interior Paint</div>
+            <div class="panel-body" ><img src="/img/paint/p59540.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p59540" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Benjamin Moore ARBORCOAT® Premium Exterior Stain</div>
+              <div class="panel-body" ><img src="/img/paint/p65559.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65559" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Benjamin Moore® Chalkboard Paint (308)</div>
+              <div class="panel-body" ><img src="/img/paint/p65561.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65561" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Benjamin Moore Composite Deck Cleaner (313)</div>
+              <div class="panel-body" ><img src="/img/paint/p65565.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65565" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div><br><br>
+
+  <div class="container">    
+    <div class="row">
+      <div class="col-sm-3">
+          <div class="panel panel-primary">
+            <div class="panel-heading">Impervex® Latex High Gloss Enamel</div>
+            <div class="panel-body" ><img src="/img/paint/p65578.png" alt=""></div>
+            <div class="panel-footer">
+              <select name="p65578" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading">Benjamin Moore Flooring Solutions</div>
+              <div class="panel-body" ><img src="/img/paint/p65566.png" alt=""></div>
+              <div class="panel-footer">
+                <select name="p65566" class="form-control" id="Qty">
+                  <option value="QTY">Please Select Quantity</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div><br><br>
+
+<footer class="container-fluid text-center">
+    <a href="shipping"><button type="submit" class="btn btn-danger">Next</button></a>
+</footer>
+</form>
+</body>
+</html>

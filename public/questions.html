@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Customer Questions</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 50px;
+      border-radius: 0;
+    }
+    
+    /* Remove the jumbotron's default bottom margin */ 
+     .jumbotron {
+      margin-bottom: 0;
+      background-color: white
+    }
+   
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+    
+    a {
+      color: white;
+    }
+    
+    a:hover {
+	    cursor: default;
+    }
+    
+    button {
+      width: 150px;
+      height: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+    <!-- Benjamin Moore -->
+<div class="jumbotron">
+  <div class="container text-center"> <!-- Company Images -->
+    <img src="/img/logo.png" alt="">
+  </div>
+    <p style="text-align:center">Ordering System</p>
+</div>
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand">Inner Banks Paint & Decorating</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" style="cursor: pointer;"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Customer Questions -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <h1>Customer Questions</h1>
+            <hr>
+        </div>
+    </div>
+</div>
+<form action="/questions" method="POST">
+<div class="container"> 
+  <div class="row">
+    <div class="col-sm-3">
+      <Strong>Where are you painting?</Strong></br>
+        <select class="form-control">
+            <option value="...">...</option>
+            <option value="Exterior">Exterior</option>
+            <option value="Interior">Interior</option>
+            </select>
+    </div>
+    <div class="col-sm-3">
+        <label for="comment"> What are you painting?</label>
+          <textarea class="form-control" rows="5" id="comment"></textarea>
+      </div>
+  </div>
+</div><br>
+
+ <div class="container">    
+  <div class="row">
+    <div class="col-sm-3">
+        <Strong>Do you have a painter?</Strong></br>
+        <label class="radio-inline"><input type="radio" name="optradio">Yes</label>
+        <label class="radio-inline"><input type="radio" name="optradio">No</label>
+      </div>
+      <div class="col-sm-3">
+        <label for="comment"> Do you have any questions for us?</label>
+          <textarea class="form-control" rows="5" id="comment"></textarea>
+      </div>
+  </div>
+</div><br><br>
+
+
+
+<footer class="container-fluid text-center">
+    <a href="thankyou.html"><button type="submit" class="btn btn-danger">Submit</button></a>
+</footer>
+</form>
+</body>
+</html>
+
