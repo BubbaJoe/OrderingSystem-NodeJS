@@ -93,7 +93,7 @@
       </div>
       <div class="col-sm-3">
           Full Address:
-          <input type="addr" class="form-control" value="">
+          <input type="addr" pattern="\d+\s\D+" class="form-control" value="">
       </div>
       <div class="col-sm-3">
         State:
@@ -175,11 +175,11 @@
       </div>
       <div class="col-sm-3">
         City:
-        <input type="text" class="form-control" value="">
+        <input type="text" pattern="\D+" class="form-control" value="">
       </div>
       <div class="col-sm-3">
         Zip Code:
-        <input type="text" class="form-control" value="">
+        <input type="text" pattern="\d{5}" class="form-control" value="">
       </div>
   </div>
 </div><br><br>

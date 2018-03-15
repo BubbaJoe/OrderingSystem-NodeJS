@@ -1,14 +1,14 @@
+'use strict';
 // Imports
-const http =  require('http'),
-  express =   require('express'),
+const express =   require('express'),
   uuid =      require('uuid/v1'),
-  //mailer =    require('nodemailer'),
   parser =    require('cookie-parser'),
   form =      require('express-formidable');
 
+require('./email.js')
+
 let router =  express(),
   mongo =     require('mongodb').MongoClient,
-  server =    http.createServer(router),
   url = "mongodb://admin:admin@ds215089.mlab.com:15089/ibxpaint";
 
 //TODO: FRONT END: Text box sizable, Update validation,
@@ -16,7 +16,7 @@ let router =  express(),
 //TODO: BACK END: Mailer, update database functions, restart if no session 
 //TODO: Database: Put product codes, in the database along with the name
 
-process.setMaxListeners(0);
+process.setMaxListeners(30);
 router.use(parser());
 router.use(form());
 
@@ -80,7 +80,7 @@ async function remove(colString, find) {
 }
 
 // Routes
-router.use(express.static('public'));
+router.use(express.static(__dirname + '/public'));
 
 router.get('/', function(req, res) {
   if (!getSession(req)) {
@@ -154,31 +154,25 @@ router.post('/submit', function(req, res) {
 
 // REST API
 router.get('/viewCart', function(req, res) {
-  findAll("inventory",{});
+  let products = findAll("products",{session_id:getSession(req)});
+  res.send(products)
 });
 
 router.post('/updateCartItem', function(req, res) {
-  findAll("inventory",{});
-});
-
-router.post('/removeCartItem', function(req, res) {
-  findAll("inventory",{session_id:getSession(req)});
+  let products = update("products",{session_id:getSession(req)},{products:req.fields});
+  res.send(products)
 });
 
 router.get('/getProducts', function(req, res) {
-  findAll("inventory",{});
 });
 
 router.post('/addProduct', function(req, res) {
-  create("inventory",{test:"test"});
 });
 
 router.post('/removeProduct', function(req, res) {
-  remove("inventory",{test:"test"});
 });
 
 router.post('/updateProduct', function(req, res) {
-  update("inventory",{test:"test"});
 });
 
 // Helper Functions
@@ -191,6 +185,10 @@ function getSession(req) {
   return req.cookies.session_id;
 }
 
+function removeSession(id) {
+  return remove("sessions", {session_id: id});
+}
+
 function fatal(err) {
   console.log("Fatal ", err);
   process.exit(1);
@@ -198,13 +196,22 @@ function fatal(err) {
 
 // Nodemailer
 
-function mailData(session_id) {
+function mailData(id) {
   // Get all the data from each table,
   // Make a reciept format and send it
   // the user.
+  let d = {session_id: id}
+  let b = find("billing", d)
+  let s = find("shipping", d)
+  let p = find("products", d)
+  let q = find("questions", d)
+  // Format data for clerk
+  
+  // Format data for end-user
+  
+  removeSession(id)
 }
 
-server.listen(process.env.PORT || 80, process.env.IP || "0.0.0.0", function(){
-  var addr = server.address();
-  console.log("server listening at", addr.address + ":" + addr.port);
+router.listen(process.env.PORT || 80, process.env.IP || "0.0.0.0", function(){
+  console.log("server listening at https://server-brimsonw16.c9users.io");
 });
