@@ -39,6 +39,57 @@
       height: 50px;
       text-align: center;
     }
+    
+    textarea {
+      resize: none;
+    }
+    
+    #cartMenu {
+      float:right;
+      width: 200px;
+      list-style: none;
+      padding: 0;
+    }
+        
+    .dropbtn {
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+    }
+    
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      right:0;
+      z-index: 1;
+    }
+    
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #ddd}
+    
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -69,10 +120,15 @@
         <li></li>
         <li></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" style="cursor: pointer;"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+      <ul class="nav navbar-nav navbar-right dropdown">
+        <li>
+          <a class="dropbtn">
+            <span class="glyphicon glyphicon-shopping-cart"></span>&nbspCart
+          </a>
+        </li>
+        <div id="cartMenu" class="dropdown-menu dropdown-content">
+        </div>
       </ul>
-    </div>
   </div>
 </nav>
 
@@ -116,11 +172,9 @@
       </div>
   </div>
 </div><br><br>
-
-
-
+<script src="assets/js/script.js"></script>
 <footer class="container-fluid text-center">
-    <a href="thankyou.html"><button type="submit" class="btn btn-danger">Submit</button></a>
+    <a href="/shipping"><button type="submit" class="btn btn-danger">Next</button></a>
 </footer>
 </form>
 </body>

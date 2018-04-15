@@ -11,6 +11,7 @@
     "express-formidable": "^1.0.0",
     "mongodb": "^3.0.4",
     "nodemailer": "^4.6.3",
+    "serve-static": "^1.13.2",
     "uuid": "^3.2.1"
   }
 }
