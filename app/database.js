@@ -1,17 +1,25 @@
+/*
+    @author Joe Williams
+    Software Engineering 2: East Carolina University
+    IBX Paint: Ordering Sysyem
+    database.js - handles the communication for the database.
+*/
 const mongo = require('mongodb').MongoClient,
   URL = "mongodb://admin:admin@ds215089.mlab.com:15089/ibxpaint?socketTimeoutMS=1500";
 
-var methods = {};
+// URL = `mongodb://${username}:${password}@${host}:${port}/${database}?socketTimeoutMS=1500`
+
+var database = {};
 
 // Async mongodb custom functions
 function query(cb) {
   mongo.connect(URL, function(err, mongo) {
-    if(err) return console.log(err);
-    else cb(mongo.db('ibxpaint'));
+    if(err) return console.log("DB CONN ERROR:",err);
+    else return cb(mongo.db('ibxpaint'));
   });
 }
 
-methods.find = function(colString, data, callback) {
+database.find = function(colString, data, callback) {
   query(function(db) {
     db.collection(colString).findOne(data, function(err, r) {
       if(callback)callback(r,err);
@@ -19,7 +27,7 @@ methods.find = function(colString, data, callback) {
   });
 }
 
-methods.findUpdate = function(colString, find, update, callback) {
+database.findUpdate = function(colString, find, update, callback) {
   query(function(db) {
     db.collection(colString).findOneAndUpdate(
       find,
@@ -32,7 +40,7 @@ methods.findUpdate = function(colString, find, update, callback) {
   });
 }
 
-methods.findAll = function(colString, data, callback) {
+database.findAll = function(colString, data, callback) {
   query(function(db) {
     db.collection(colString).find(data).toArray(function(err, r) {
       if(callback)callback(r,err);
@@ -40,7 +48,7 @@ methods.findAll = function(colString, data, callback) {
   });
 }
 
-methods.create = function(colString, data, callback) {
+database.create = function(colString, data, callback) {
   query(function(db) {
     db.collection(colString).insertOne(data, function(err, r) {
       if(callback)callback(r,err);
@@ -48,7 +56,7 @@ methods.create = function(colString, data, callback) {
   });
 }
 
-methods.update = function(colString, find, data, callback) {
+database.update = function(colString, find, data, callback) {
   query(function(db) {
     db.collection(colString).updateOne(find, {$set: data}, function(err, r) {
       if(callback) callback(r);
@@ -57,7 +65,7 @@ methods.update = function(colString, find, data, callback) {
   });
 }
 
-methods.remove = function(colString, find, callback) {
+database.remove = function(colString, find, callback) {
   query(function(db) {
     db.collection(colString).deleteOne(find, function(err, r) {
       if(callback)callback(r,err);
@@ -65,4 +73,4 @@ methods.remove = function(colString, find, callback) {
   });
 }
 
-module.exports = methods;
+module.exports = database;

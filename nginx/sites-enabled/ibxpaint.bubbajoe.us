@@ -1,3 +1,8 @@
+# Joe Williams
+# Software Engineering 2
+# IBX Paint: Ordering Sysyem
+# ibxpaint.bubbajoe.us - nginx configuration file for the specified domain
+
 server {
   listen 80;
   server_name ibxpaint.bubbajoe.us;

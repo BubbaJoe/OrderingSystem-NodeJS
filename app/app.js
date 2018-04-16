@@ -1,3 +1,10 @@
+/*
+    @author Joe Williams
+    Software Engineering 2: East Carolina University
+    IBX Paint: Ordering Sysyem
+    app.js - Creates the server, and initializes all data.
+*/
+
 'use strict';
 
 const express =   require('express'),
@@ -5,8 +12,8 @@ const express =   require('express'),
   parser =        require('cookie-parser'),
   form =          require('express-formidable'),
   db =            require('./database.js'),
-  path =          require('path');
-  // mailer =        require('./mailer.js');
+  path =          require('path'),
+  mailer =        require('./mailer.js');
 
 let app =  express();
 
@@ -192,23 +199,13 @@ function sendView(res, filename) {
   res.sendFile(path.join(`${__dirname}/../views/${filename}`));
 }
 
-function fatal(err) {
-  console.log("Fatal ", err);
-  process.exit(1);
-}
-
-// Nodemailer
-function mailData(id) {
-  // Get all the data from each table,
-  // Make a reciept format and send it
-  // the user.
-  removeSession(id)
-}
-
-let port = 8080;
-
+// Application arguments
+let port = 8080, ip = "127.0.0.1";
 if (process.argv.length > 2)
   port = parseInt(process.argv[2]);
 
-app.listen(port, "127.0.0.1",
-  ()=>console.log("server started on port:"+port));
+if(process.env.IP && !process.argv.contains('-p'))
+  ip = process.env.IP
+
+app.listen(port, ip,
+  ()=>console.log("server started on port: "+port+" on "+ip));

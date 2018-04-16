@@ -1,22 +1,37 @@
 /*
     @author Joe Williams
     Software Engineering : East Carolina University
-    PirateNotes
-    email.js - handles on communication of the web server to the mail server.
+    IBX Paint: Ordering Sysyem
+    mailer.js - handles the communication for mailing services.
 */
-let nodemailer = require('nodemailer')
 
-/*
-let email = process.env.EMAIL,
-    domain = process.env.DOMAIN;
+let nodemailer = require('nodemailer'),
+	db = require('./database');
+
+let mailer = {},
+	email = process.env.EMAIL,
+    domain = process.env.DOMAIN,
+    password = process.env.EMAIL_PASSWORD,
+    client_email = process.env.CLIENT_EMAIL
+    
+client_email = "skbubba@icloud.com"
+email = "ibxpaint.no.reply@gmail.com"
+password = "AsDf1234"
+domain = "server-brimsonw16.c9users.io"
+if(!email || !domain || !password)
+	console.log("ERR:", "EMAIL ENV VARS NOT SET")
+
+function generateOrderNumber() {
+	return Math.floor(Math.random() * 10000000) + 99999999
+}
 
 let transporter = nodemailer.createTransport({
-    service: 'smtp.gmx.com',
-    secure: false,
+    service: 'smtp.gmail.com',
+    secure: true,
     port: 587,
     auth: {
         user: email,
-        pass: process.env.EMAIL_PASSWORD
+        pass: password
     },
     tls: {
         rejectUnauthorized: false
@@ -30,9 +45,9 @@ let mailOptions = {
 }
 
 // send the password email to the user
-var sendEmail = (to_email,callback) => {
+var sendClientEmail = (callback) => {
     mailOptions.subject = 'IBXPaint - New Order Received'
-    mailOptions.to = user_email
+    mailOptions.to = client_email;
     
     mailOptions.html = 
 `<html>
@@ -63,40 +78,41 @@ var sendEmail = (to_email,callback) => {
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Customer Information:</h3>
-			$(full_name)<br>
-			$(phone_number)<br>
-			$(email_address)<br>
-			$(delivery_info)<br>
-			$(questions)<br></p>
+			${full_name}<br>
+			${phone_number}<br>
+			${email_address}<br>
+			${delivery_info}<br>
+			${questions}<br></p>
 			
 			<p style="
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Order Information:</h3>
-			$(item) : $(quantity)<br></p>
+			${item} : ${quantity}<br></p>
 			
 			<p style="
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Billing Information:</h3>
-			$(cardholder_name)<br>
-			$(payment_type)<br>
-			$(card_number)<br>
-			$(expiration_month)/$(expiration_year)<br>
-			$(full_address)<br>
-			$(city)<br>
-			$(state)<br>
-			$(zip_code)<br>
+			${cardholder_name}<br>
+			${payment_type}<br>
+			${card_number}<br>
+			${expiration_month}/${expiration_year}<br>
+			${full_address}<br>
+			${city}<br>
+			${state}<br>
+			${zip_code}<br>
 			</p>
 			
 		</div>
 	</body>
 <html>`
+}
 
 // send the password email to the user
-var sendEmail = (to_email,callback) => {
+var sendUserEmail = (user_email,callback) => {
     mailOptions.subject = 'IBXPaint - Order Confirmation'
-    mailOptions.to = user_email
+    mailOptions.to = user_email;
     
     mailOptions.html = 
 `<html>
@@ -129,7 +145,7 @@ var sendEmail = (to_email,callback) => {
 			<p style="
 				font-family: 'Arial';
 				margin: 0;">
-			Your Order Number is: $(session_id)</p>
+			Your Order Number is: ${order_id}</p>
 			
 			<br>
 			<br>
@@ -138,7 +154,7 @@ var sendEmail = (to_email,callback) => {
 				font-family: 'Arial';
 				margin: 0;">
 				Your Order Reciept:<br>
-				$(item) : $(quantity)<br>
+				${itemlist}
 				</p>
 			
 			<br>
@@ -156,8 +172,14 @@ var sendEmail = (to_email,callback) => {
     transporter.sendMail(mailOptions, (err,info) => {
         if(err) console.log(err)
         else if(callback) return callback(user)
-    })
-        
-    .catch(err => console.log("Couldn't send email",err))
+    }).catch(err => console.log("Couldn't send email",err))
 }
-*/
+
+mailer.sendEmails = function(session_id) {
+	db.create('orders', '')
+	let cb = (r) => console.log(r)
+	sendClientEmail(cb)
+	sendUserEmail(user_email, cb)
+}
+
+module.exports = mailer;
