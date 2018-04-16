@@ -79,7 +79,6 @@ app.post('/shipping', function(req, res) {
   },() => {
     res.redirect("billing")
   });
-  
 });
 
 app.post('/submit', function(req, res) {
@@ -119,7 +118,10 @@ app.get('/viewCart', function(req, res) {
       console.log("view",r)
       if (err) res.json({error:err})
       else if(!r) res.json({error:"No session found"})
-      else res.json(r.products)
+      else {
+        if (Object.keys(r).length > 0) res.json(r.products)
+        else res.json({error:"No items"})
+      }
     } else {
       console.log("ERR","Headers already sent")
       res.status(503)
@@ -136,8 +138,8 @@ app.post('/updateCartItems', function(req, res) {
         data[item] = req.fields[item]
     // Finds and updates the data if data was set
     db.findUpdate("session_data",{session_id: getSession(req)},{$set: {products: data}},(r) => {
-      res.json(r.value.products)
-      console.log("SUCCESS", r)
+      if (r && r.value && r.value.products != "")
+        res.json(data)
     })
   } else {
     console.log("ERROR", req.fields)
@@ -160,7 +162,6 @@ app.get('/getItems', function(req, res) {
 });
 
 // Helper Functions
-
 function setSession(req, res) {
   let id = uuid();
   db.create("session_data", {
@@ -197,7 +198,6 @@ function fatal(err) {
 }
 
 // Nodemailer
-
 function mailData(id) {
   // Get all the data from each table,
   // Make a reciept format and send it
@@ -205,6 +205,10 @@ function mailData(id) {
   removeSession(id)
 }
 
-app.listen(process.env.PORT || 8080, process.env.IP || "0.0.0.0", function(){
-  console.log("web server listening at https://server-brimsonw16.c9users.io");
-});
+let port = 8080;
+
+if (process.argv.length > 2)
+  port = parseInt(process.argv[2]);
+
+app.listen(port, "127.0.0.1",
+  ()=>console.log("server started on port:"+port));

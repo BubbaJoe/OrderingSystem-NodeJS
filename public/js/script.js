@@ -13,7 +13,8 @@ function reloadCart(timeout) {
 function updateCart(form_data){
     let options,
       update = function(data) {
-        if(data.error) {
+        console.log("updated cart:",data)
+        if(data.error || Object.keys(data).length == 0) {
           console.log("ERR",data.error)
           $(".c_item").remove()
           $("#cartMenu").append("<p style='text-align: center' class='c_item'>No items in cart</p>")
