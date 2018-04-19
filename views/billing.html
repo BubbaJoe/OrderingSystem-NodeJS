@@ -15,19 +15,22 @@
     <div class="jumbotron">
         <div class="container text-center">
             <!-- Company Images -->
-            <img src="/assets/img/logo.png" alt="">
+    <img src="/assets/img/logo.png" alt="">
         </div>
         <p style="text-align:center">Ordering System</p>
     </div>
     <nav class="navbar navbar-inverse">
+              <a class="navbar-brand">Inner Banks Paint & Decorating | Billing</a>
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right dropdown">
+                    
                 <li>
                   <a href="javascript: updateCart()" class="dropbtn">
                     <span class="glyphicon glyphicon-shopping-cart"></span>&nbspCart
                   </a>
                 </li>
+                
                 <div id="cartMenu" onClick="updateCart()" class="dropdown-menu dropdown-content">
                 </div>
               </ul>
@@ -47,11 +50,11 @@
                 <div class="col-sm-6" style="padding-left: 0">
                     <label for="pnumber">Phone Number: (ex: 555-555-5555)</label>
                     <!-- Pattern -->
-                    <input required pattern="\d{3}\-?\d{3}\-?\d{4}" id="phone" class="form-control" data-format="+1 (ddd) ddd-dddd">
+                    <input required pattern="\d{3}-?\d{3}-?\d{4}" id="phone" class="form-control" name="phone" >
                 </div>
                 <div class="col-sm-6" style="padding-left: 0">
                     <label for="email">E-mail Address:</label>
-                    <input required type="email" pattern=".+@.+\.\D{2,3}$" id="email" class="form-control">
+                    <input required type="email" pattern=".+@.+\.\D{2,3}$" id="email" name="email" class="form-control">
                 </div>
             </div>
         </div>
@@ -59,11 +62,11 @@
         <div class="container" id="creditStuff">
             <div class="col-sm-6">
                 <label for="cnumber">Card Number:</label>
-                <input required type="text" pattern="\d{12,19}" class="form-control" id="cnumber">
+                <input required type="text" pattern="\d{12,19}" class="form-control" id="cnumber" name="cardnum">
             </div>
             <div class="col-sm-6">
                 <label for="expmonth">Exp Month:</label>
-                <select required class="form-control" id="expmonth">
+                <select required class="form-control" id="expmonth" name="month">
                     <option value="">Select Month</option>
                     <option>Jan</option>
                     <option>Feb</option>
@@ -81,7 +84,7 @@
             </div>
             <div class="col-sm-6">
                 <label for="expyear">Exp Year:</label>
-                <select required class="form-control" id="expyear">
+                <select required class="form-control" id="expyear" name="year">
                     <option value="">Select Year</option>
                     <option>2018</option>
                     <option>2019</option>
@@ -99,20 +102,20 @@
             </div>
             <div class="col-sm-6">
                 <label for="addr">Billing Address:</label>
-                <input required type="text" class="form-control" id="address">
+                <input required type="text" class="form-control" id="address" name="address">
             </div>
             <div class="col-sm-6">
                 <label for="city">City:</label>
-                <input required type="text" pattern="\D+" class="form-control" id="city">
+                <input required type="text" pattern="\D+" class="form-control" id="city" name="city">
             </div>
             <div class="col-sm-6">
                 <label for="zip">Zip Code:</label>
-                <input required type="text" pattern="\d{5}" class="form-control" id="zip">
+                <input required type="text" pattern="\d{5}" class="form-control" id="zip" name="zip">
             </div>
             <div class="col-sm-6">
                 <label required id="state" for="state">State:</label>
-                <select required class="form-control" id="state">
-                    <option value="">Select State</option>
+                <select required class="form-control" id="state" name="state">
+                    <option value="-1">Select State</option>
                     <option value="AK">Alaska</option>
                     <option value="AL">Alabama</option>
                     <option value="AR">Arkansas</option>
@@ -187,6 +190,7 @@
             var city = document.getElementById("city");
             var state = document.getElementById("state");
             var zip = document.getElementById("zip");
+            var email = document.getElementById("email");
 
             var delivery = document.getElementById("cd");
             var pickup = document.getElementById("cash");
@@ -201,6 +205,7 @@
                 city.required = true;
                 state.required = true;
                 zip.required = true;
+                email.required = true;
             } else if (document.getElementById("cash").checked) {
                 //alert("Pickup selected");
                 x.style.display = "none"; //none makes it hide

@@ -39,6 +39,9 @@ a:hover {
 
 .p_img {
   height:100%;
+  height: 175px; 
+  display: block; 
+  margin: auto;
 }
 
 #cartMenu {

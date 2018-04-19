@@ -60,12 +60,13 @@ app.post('/questions', function(req, res) {
     questions: questions,
     timestamp: Date.now()
   },() => {
-    res.redirect("shipping")
+    res.redirect("/shipping")
   });
 });
 
 app.post('/billing', function(req, res) {
   let billing = req.fields, sid = getSession(req);
+  console.log()
   db.update('session_data',{
     session_id: sid
   },{
@@ -73,10 +74,10 @@ app.post('/billing', function(req, res) {
     timestamp: Date.now()
   },() => {
     // Sends emails
-    mailer.sendEmails("Submit data", sid,() => {
-      removeSession(res,sid)
+    mailer.sendEmails(sid,
+    () => {
+      removeSession(res, sid)
     })
-    
     res.redirect("/thankyou")
   });
 });
@@ -127,7 +128,7 @@ app.get('/viewCart', function(req, res) {
   var id = getSession(req)
   if(id) db.find("session_data",{session_id:id}, (r,err) => {
     if(!res.headersSent) {
-      console.log("view",r)
+      console.log("view cart",r)
       if (err) res.json({error:err})
       else if(!r) res.json({error:"No session found"})
       else {
@@ -165,10 +166,8 @@ app.get('/removeCartItem/:item_id',function (req, res) {
   if(!id || !sid) return res.status(400).send("Incorrect format")
   db.find('session_data',{session_id:sid},(r)=> {
     if(r) {
-      console.log("from",r)
       delete r.products[id]
-      console.log("to",r)
-      db.findUpdate('session_data',{session_id:sid},{$set:{products:r.products}},() => res.status(200))
+      db.findUpdate('session_data',{session_id:sid},{$set:{products:r.products}},() => res.json({}))
     } else {
       res.status(401)
     }
@@ -222,13 +221,15 @@ function sendView(res, filename) {
 }
 
 // Application arguments
-let port = 8080, ip = "127.0.0.1";
+let port = 8080, ip = "0.0.0.0";
 if (process.argv.length > 2)
-  port = parseInt(process.argv[2]);
+    port = parseInt(process.argv[2]);
 
-if(process.env.IP && !process.argv.includes('-p'))
+if(process.env.IP)
   ip = process.env.IP
 
+if(process.argv.includes('-p'))
+  ip = "127.0.0.1"
 
 app.listen(port, ip,
-  ()=>console.log("server started on port: "+port+" on "+ip));
+  ()=>console.log("server started on port: "+port+" on "+ip+" with version:"+process.version));

@@ -45,11 +45,31 @@ let mailOptions = {
     to: email
 }
 
+// _id: 5ad8a8375482c9ac68a444f2,
+//   session_id: '535c51c0-43de-11e8-a614-e1f006036c94',
+//   products: {},
+//   shipping: {},
+//   billing: 
+//   { cardoption: 'on',
+//      phone: '2522522525',
+//      email: 'joewilliamsis@live.com',
+//      cardnum: '',
+//      month: '',
+//      year: '',
+//      address: '',
+//      city: '',
+//      zip: '',
+//      state: 'IA' },
+//   questions: {},
+//   timestamp: 1524148830680
+
 // send the password email to the user
-var sendClientEmail = (data, callback) => {
+var sendClientEmail = (data, order_id, callback) => {
     mailOptions.subject = 'IBXPaint - New Order Received';
     mailOptions.to = client_email;
-    const {full_name,phone_number,email_address,delivery_info,questions,order_id,itemlist} = data
+    const {full_name,phone_number,email_address,delivery_info,questions} = 1
+    let itemlist = ""
+    for (var a in Object.keys(data.products)) a.charAt(1)
     mailOptions.html = 
 `<html>
     <head>
@@ -113,7 +133,7 @@ var sendClientEmail = (data, callback) => {
 }
 
 // send the password email to the user
-var sendUserEmail = (user_email,data,callback) => {
+var sendUserEmail = (user_email, data, callback) => {
     mailOptions.subject = 'IBXPaint - Order Confirmation';
     mailOptions.to = user_email;
     const {order_id,itemlist} = data;
@@ -138,7 +158,7 @@ var sendUserEmail = (user_email,data,callback) => {
 					alt="Benjamin Moore" /></center>
 					
 			<h1 style="
-				font-family: 'Arial';
+				font-family: "Arial";
 				margin: 0;">
 			Your Order Has Been Received!</h1>
 			
@@ -146,50 +166,51 @@ var sendUserEmail = (user_email,data,callback) => {
 			<br>
 			
 			<p style="
-				font-family: 'Arial';
+				font-family: "Arial";
 				margin: 0;">
-			Your Order Number is: ${order_id}</p>
+			Your Order Number is: ${1}</p>
 			
 			<br>
 			<br>
 			
 			<p style="
-				font-family: 'Arial';
+				font-family: "Arial";
 				margin: 0;">
 				Your Order Reciept:<br>
-				${itemlist}
+				${1}
 				</p>
 			
 			<br>
 			<br>
 			
 			<p style="
-				font-family: 'Arial';
+				font-family: "Arial";
 				margin: 0;">
 			If you did not place this order or have any questions, please contact John Demotts at 252-758-7775. </p>
 			
 		</div>
 	</body>
-<html>`    
+<html>` 
     
     transporter.sendMail(mailOptions, (err,info) => {
         if(err) console.log(err)
         else if(callback) return callback(info)
-    }).catch(err => console.log("Couldn't send email",err))
+        console.log("emailing done")
+    })
 }
 
-mailer.sendEmails = function(session_id) {
+mailer.sendEmails = function(session_id,cb) {
 	let order_id = generateOrderNumber()
 	db.find('session_data', {session_id:session_id},
-	(r) => {
-		if(!r)
-			console.log("SESSION NOT FOUND ERROR")
-		else db.create('orderDetails',{data:r,order_id:order_id},
-		(r) => {
-			sendUserEmail(r.view.billing.email,r.view)
-			sendClientEmail(r.view)
-			console.log(r.view)
-		})
+	(insert,err) => {
+		if(!insert)
+			console.log("SESSION NOT FOUND ERROR",err,insert)
+		else {
+			db.create('orderDetails',{data:insert, order_id: order_id})
+			console.log("FORM DATA", insert)
+			sendUserEmail(insert.billing.email, insert, cb)
+			sendClientEmail(insert.view)
+		}
 	})
 	// let cb = (r) => console.log(r)
 	// sendClientEmail(data,cb)
