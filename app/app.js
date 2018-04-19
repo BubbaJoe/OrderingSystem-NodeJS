@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
   res.redirect('/home')
 });
 
-app.get('/session_analyzer', function(req, res) {
+app.get('/nosession', function(req, res) {
   // if the user's session is valid
   // perform session checking
   res.redirect('/home')
@@ -65,14 +65,19 @@ app.post('/questions', function(req, res) {
 });
 
 app.post('/billing', function(req, res) {
-  let billing = req.fields;
+  let billing = req.fields, sid = getSession(req);
   db.update('session_data',{
-    session_id: getSession(req)
+    session_id: sid
   },{
     billing: billing,
     timestamp: Date.now()
   },() => {
-    res.redirect("thankyou")
+    // Sends emails
+    mailer.sendEmails("Submit data", sid,() => {
+      removeSession(res,sid)
+    })
+    
+    res.redirect("/thankyou")
   });
 });
 
@@ -89,7 +94,7 @@ app.post('/shipping', function(req, res) {
 });
 
 app.post('/submit', function(req, res) {
-  mailData(getSession(req));
+  mailer.sendEmails(getSession(req));
   res.redirect("thankyou");
 });
 
@@ -117,7 +122,7 @@ app.get('/thankyou', function(req, res) {
   sendView(res,"thankyou.html")
 });
 
-// REST API
+// RESTful
 app.get('/viewCart', function(req, res) {
   var id = getSession(req)
   if(id) db.find("session_data",{session_id:id}, (r,err) => {
@@ -145,14 +150,30 @@ app.post('/updateCartItems', function(req, res) {
         data[item] = req.fields[item]
     // Finds and updates the data if data was set
     db.findUpdate("session_data",{session_id: getSession(req)},{$set: {products: data}},(r) => {
-      if (r && r.value && r.value.products != "")
-        res.json(data)
+      // if (r && r.value && r.value.products != "") res.json(data)
+      res.status(200)
     })
   } else {
     console.log("ERROR", req.fields)
     res.json({error:"No fields"})
+    res.status(404)
   }
 });
+
+app.get('/removeCartItem/:item_id',function (req, res) {
+  let id = req.params.item_id, sid = getSession(req)
+  if(!id || !sid) return res.status(400).send("Incorrect format")
+  db.find('session_data',{session_id:sid},(r)=> {
+    if(r) {
+      console.log("from",r)
+      delete r.products[id]
+      console.log("to",r)
+      db.findUpdate('session_data',{session_id:sid},{$set:{products:r.products}},() => res.status(200))
+    } else {
+      res.status(401)
+    }
+  })
+})
 
 app.get('/getItem/:id', function(req, res) {
   if(!req.params.id) return
@@ -168,7 +189,8 @@ app.get('/getItems', function(req, res) {
   })
 });
 
-// Helper Functions
+/* ------------- Helpers ---------------- */
+
 function setSession(req, res) {
   let id = uuid();
   db.create("session_data", {
@@ -204,8 +226,9 @@ let port = 8080, ip = "127.0.0.1";
 if (process.argv.length > 2)
   port = parseInt(process.argv[2]);
 
-if(process.env.IP && !process.argv.contains('-p'))
+if(process.env.IP && !process.argv.includes('-p'))
   ip = process.env.IP
+
 
 app.listen(port, ip,
   ()=>console.log("server started on port: "+port+" on "+ip));

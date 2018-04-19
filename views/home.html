@@ -3,53 +3,20 @@
 <head>
   <title>Welcome</title>
   <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
-    .navbar {
-      margin-bottom: 50px;
-      border-radius: 0;
-    }
-    
-    /* Remove the jumbotron's default bottom margin */ 
-     .jumbotron {
-        background-color: #FFFFFF;
-        margin-bottom: 0;
-    }
-   
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      background-color: #f2f2f2;
-      padding: 25px;
-    }
-    
-    a {
-      color: white;
-    }
-    
-    a:hover {
-	    cursor: default;
-    }
-    
-    button {
-      width: 150px;
-      height: 50px;
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/css/style.css"/>
 </head>
 <body>
-
 <div class="jumbotron">
   <div class="container text-center"> <!-- Company Images -->
-    <img src="assets/img/logo.png" alt="">
+    <img src="/assets/img/logo.png" alt="">
   </div>
     <p style="text-align:center">Ordering System</p>
 </div>
-
-
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -74,16 +41,13 @@
     </div>
   </div>
 </nav>
-
 <div class="container">
     <h1>Welcome to the Inner Banks<br>Paint & Decorating Ordering System</h1>
     <h2>Click the "Next" button to begin.<h2>
 </div>
 <br><br>
-
 <footer class="container-fluid text-center">
-    <a href="products"><button class="btn btn-danger">Next</button></a>
+    <a href="/products"><button class="btn next-btn btn-danger">Next</button></a>
 </footer>
-
 </body>
 </html>

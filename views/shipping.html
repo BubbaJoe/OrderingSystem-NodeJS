@@ -4,53 +4,19 @@
     <title>Delivery/Pick Up</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style>
-
-        /* Remove the navbar's default rounded borders and increase the bottom margin */
-        .navbar {
-            margin-bottom: 50px;
-            border-radius: 0;
-        }
-
-        /* Remove the jumbotron's default bottom margin */
-        .jumbotron {
-            background-color: #FFFFFF;
-            margin-bottom: 0;
-        }
-
-        /* Add a gray background color and some padding to the footer */
-        footer {
-            background-color: #f2f2f2;
-            padding: 25px;
-        }
-
-        a {
-            color: white;
-        }
-
-            a:hover {
-                cursor: default;
-            }
-
-        button {
-            width: 150px;
-            height: 50px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <div class="jumbotron">
         <div class="container text-center">
-            <!-- Company Images -->
-            <img src="/img/logo.png" alt="">
+            <img src="/assets/img/logo.png" alt="">
         </div>
         <p style="text-align:center">Ordering System</p>
     </div>
-
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -62,37 +28,38 @@
                 <a class="navbar-brand">Inner Banks Paint & Decorating</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
-                    <li class="active"></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="./viewCart" style="cursor: pointer;"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                <ul class="nav navbar-nav navbar-right dropdown">
+                    <li>
+                        <a href="javascript: updateCart()" class="dropbtn">
+                            <span class="glyphicon glyphicon-shopping-cart"></span>&nbspCart
+                        </a>
+                    </li>
+                    <div id="cartMenu" onClick="updateCart()" class="dropdown-menu dropdown-content">
+                    </div>
                 </ul>
             </div>
         </div>
     </nav>
     <form action="/shipping" method="POST">
-        <div class="container" >
-            <h1>Delivery/Pick Up</h1>
+        <div class="container" name="shipping">
+            <h1>Delivery or Pick Up?</h1>
             <hr>
-            <input onchange="showFunctionDelivery()" type="radio" class="form-group" id="delivery" name="delivery" checked> Delivery &nbsp
-            <input onchange="showFunctionPickup()" type="radio" class="form-group" id="pickup" name="delivery"> Pick Up &nbsp
+            <input onchange="showFunction()" type="radio" class="form-group" id="deliveryb" name="delivery" checked> Delivery &nbsp
+            <input onchange="showFunction()" type="radio" class="form-group" id="pickupb" name="delivery"> Pick Up &nbsp
             <br>
-        <!---Needed for order name, date time.-->
-            <div class="row" id="PickupStuff">
-                <div class="col-sm-3">
+            <!---Needed for order name, date time.-->
+            <div class="row" id="pickupStuff">
+                <div class="col-sm-6">
                     Name: ex. John Smith
-                    <input required type="text" pattern="\D+" id="name" class="form-control" value="" name="name">
+                    <input type="text" pattern="\D+" required id="name" class="form-control" value="" name="name">
                 </div>
-                <div class="col-sm-3">
+            </div>
+            <div class="row" id="pickupStuff">
+                <div class="col-sm-6">
                     Desired Date:
-                    <input required type="date" id="date"class="form-control" name="date">
+                    <input type="date" required id="date" class="form-control" name="date">
                 </div>
-                <div class="col-sm-3" id="time">
+                <div class="col-sm-6" id="time">
                     Desired Time:
                     <select class="form-control">
                         <option value="7am">7am</option>
@@ -107,22 +74,23 @@
                         <option value="4pm">4pm</option>
                     </select>
                 </div>
-            
             </div>
         </div>
         <br>
         <!--delivery stuff-->
         <div class="container" id="deliveryStuff">
             <div class="row">
-                <div class="col-sm-3" id="deliveryOp">
-                    Address: ex. 12345 Plain Dr
-                    <input required type="text" id="address" pattern="\d+\s\D+" class="form-control" value="" name="address">
+                <div class="col-sm-6" id="deliveryOp">
+                    Address: ex. 1234 Plain Dr
+                    <input type="text" required id="address" class="form-control" value="" name="address">
                 </div>
-                <div class="col-sm-3" id="deliveryOp">
+                <div class="col-sm-6" id="deliveryOp">
                     City: ex. Austin
-                    <input required type="text" id="city" pattern="\D+" class="form-control" value="" name="city">
+                    <input type="text" required id="city" pattern="\D+" class="form-control" value="" name="city">
                 </div>
-                <div class="col-sm-3" id="deliveryOp">
+            </div>
+            <div class="row">
+                <div class="col-sm-6" id="deliveryOp">
                     State:
                     <select required class="form-control" id="state" name="statename">
                         <option value="">Please Select One</option>
@@ -179,59 +147,46 @@
                         <option value="WV">West Virginia</option>
                         <option value="WY">Wyoming</option>
                     </select>
-
                 </div>
-                <div class="col-sm-3" id="deliveryOp">
+                <div class="col-sm-6" id="deliveryOp">
                     Zip Code: ex. 12345
                     <input required id="zip" type="text" pattern="\d{5}" class="form-control" value="" name="zipcode">
                 </div>
             </div>
         </div><br><br>
-        
-        <script>
-            let d = document.getElementById("delivery"),
-                p = document.getElementById("pickup");
-
-
-        </script>
         <footer class="container-fluid text-center">
-            <a href="/billing"><button type="submit" class="btn btn-danger">Next</button></a>
+            <button type="submit" class="btn next-btn btn-danger">Next</button>
         </footer>
     </form>
     <script>
-        function showFunctionDelivery() {
+        function showFunction() {
             var x = document.getElementById("deliveryStuff");
-            var y = document.getElementById("PickupStuff");
+            var y = document.getElementById("pickupStuff");
+            var address = document.getElementById("address");
+            var city = document.getElementById("city");
+            var state = document.getElementById("state");
+            var zip = document.getElementById("zip");
 
-            if (x.style.display === "none") {
-                x.style.display = "block";
-                
-     
-            } else {
-                x.style.display = "block";
-                //$("#deliveryTest #state #zip").prop("required",false)
-                
-            }
-        }
-        
-        function showFunctionPickup() {
-            var x = document.getElementById("deliveryStuff");
-            var y = document.getElementById("PickupStuff");
+            var delivery = document.getElementById("deliveryb");
+            var pickup = document.getElementById("pickupb");
 
-            if (x.style.display === "block") {
+            if (document.getElementById("deliveryb").checked) {
+                //alert("Delivery selected");
+                x.style.display = "block";
+                address.required = true;
+                city.required = true;
+                state.required = true;
+                zip.required = true;
+            } else if (document.getElementById("pickupb").checked) {
+                //alert("Pickup selected");
                 x.style.display = "none";
-                
-     
-            } else {
-                x.style.display = "none";
-                //$("#deliveryTest #state #zip").prop("required",false)
-                
+                address.required = false;
+                city.required = false;
+                state.required = false;
+                zip.required = false;
             }
         }
     </script>
-<script src="assets/js/script.js"></script>
+    <script src="/assets/js/script.js"></script>
 </body>
 </html>
-
-
-

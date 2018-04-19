@@ -5,19 +5,20 @@
     mailer.js - handles the communication for mailing services.
 */
 
-let nodemailer = require('nodemailer'),
+const nodemailer = require('nodemailer'),
 	db = require('./database');
 
 let mailer = {},
 	email = process.env.EMAIL,
     domain = process.env.DOMAIN,
     password = process.env.EMAIL_PASSWORD,
-    client_email = process.env.CLIENT_EMAIL
+    client_email = process.env.CLIENT_EMAIL;
     
 client_email = "skbubba@icloud.com"
 email = "ibxpaint.no.reply@gmail.com"
 password = "AsDf1234"
 domain = "server-brimsonw16.c9users.io"
+
 if(!email || !domain || !password)
 	console.log("ERR:", "EMAIL ENV VARS NOT SET")
 
@@ -45,10 +46,10 @@ let mailOptions = {
 }
 
 // send the password email to the user
-var sendClientEmail = (callback) => {
-    mailOptions.subject = 'IBXPaint - New Order Received'
+var sendClientEmail = (data, callback) => {
+    mailOptions.subject = 'IBXPaint - New Order Received';
     mailOptions.to = client_email;
-    
+    const {full_name,phone_number,email_address,delivery_info,questions,order_id,itemlist} = data
     mailOptions.html = 
 `<html>
     <head>
@@ -88,21 +89,23 @@ var sendClientEmail = (callback) => {
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Order Information:</h3>
-			${item} : ${quantity}<br></p>
+			Order Number: ${order_id}
+			${itemlist}
+			</p>
 			
 			<p style="
 				font-family: 'Arial';
 				margin: 0;">
-			<h3>Billing Information:</h3>
-			${cardholder_name}<br>
-			${payment_type}<br>
-			${card_number}<br>
-			${expiration_month}/${expiration_year}<br>
-			${full_address}<br>
-			${city}<br>
-			${state}<br>
-			${zip_code}<br>
-			</p>
+			<h3>Billing Information:</h3>`
+			// ${cardholder_name}<br>
+			// ${payment_type}<br>
+			// ${card_number}<br>
+			// ${expiration_month}/${expiration_year}<br>
+			// ${full_address}<br>
+			// ${city}<br>
+			// ${state}<br>
+			// ${zip_code}<br>
+			+`</p>
 			
 		</div>
 	</body>
@@ -110,10 +113,10 @@ var sendClientEmail = (callback) => {
 }
 
 // send the password email to the user
-var sendUserEmail = (user_email,callback) => {
-    mailOptions.subject = 'IBXPaint - Order Confirmation'
+var sendUserEmail = (user_email,data,callback) => {
+    mailOptions.subject = 'IBXPaint - Order Confirmation';
     mailOptions.to = user_email;
-    
+    const {order_id,itemlist} = data;
     mailOptions.html = 
 `<html>
     <head>
@@ -171,15 +174,26 @@ var sendUserEmail = (user_email,callback) => {
     
     transporter.sendMail(mailOptions, (err,info) => {
         if(err) console.log(err)
-        else if(callback) return callback(user)
+        else if(callback) return callback(info)
     }).catch(err => console.log("Couldn't send email",err))
 }
 
 mailer.sendEmails = function(session_id) {
-	db.create('orders', '')
-	let cb = (r) => console.log(r)
-	sendClientEmail(cb)
-	sendUserEmail(user_email, cb)
+	let order_id = generateOrderNumber()
+	db.find('session_data', {session_id:session_id},
+	(r) => {
+		if(!r)
+			console.log("SESSION NOT FOUND ERROR")
+		else db.create('orderDetails',{data:r,order_id:order_id},
+		(r) => {
+			sendUserEmail(r.view.billing.email,r.view)
+			sendClientEmail(r.view)
+			console.log(r.view)
+		})
+	})
+	// let cb = (r) => console.log(r)
+	// sendClientEmail(data,cb)
+	// sendUserEmail(user_email,data, cb)
 }
 
 module.exports = mailer;

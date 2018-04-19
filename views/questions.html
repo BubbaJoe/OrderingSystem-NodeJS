@@ -1,182 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Customer Questions</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
-    .navbar {
-      margin-bottom: 50px;
-      border-radius: 0;
-    }
-    
-    /* Remove the jumbotron's default bottom margin */ 
-     .jumbotron {
-      margin-bottom: 0;
-      background-color: white
-    }
-   
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      background-color: #f2f2f2;
-      padding: 25px;
-    }
-    
-    a {
-      color: white;
-    }
-    
-    a:hover {
-	    cursor: default;
-    }
-    
-    button {
-      width: 150px;
-      height: 50px;
-      text-align: center;
-    }
-    
-    textarea {
-      resize: none;
-    }
-    
-    #cartMenu {
-      float:right;
-      width: 200px;
-      list-style: none;
-      padding: 0;
-    }
-        
-    .dropbtn {
-      color: white;
-      padding: 16px;
-      font-size: 16px;
-      border: none;
-    }
-    
-    /* The container <div> - needed to position the dropdown content */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    
-    /* Dropdown Content (Hidden by Default) */
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f1f1f1;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      right:0;
-      z-index: 1;
-    }
-    
-    /* Links inside the dropdown */
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-    
-    /* Change color of dropdown links on hover */
-    .dropdown-content a:hover {background-color: #ddd}
-    
-    /* Show the dropdown menu on hover */
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-  </style>
+    <title>Customer Questions</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
-    <!-- Benjamin Moore -->
-<div class="jumbotron">
-  <div class="container text-center"> <!-- Company Images -->
-    <img src="/img/logo.png" alt="">
-  </div>
-    <p style="text-align:center">Ordering System</p>
-</div>
-
-
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand">Inner Banks Paint & Decorating</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right dropdown">
-        <li>
-          <a class="dropbtn">
-            <span class="glyphicon glyphicon-shopping-cart"></span>&nbspCart
-          </a>
-        </li>
-        <div id="cartMenu" class="dropdown-menu dropdown-content">
+    <div class="jumbotron">
+        <div class="container text-center">
+            <img src="assets/img/logo.png" alt="">
         </div>
-      </ul>
-  </div>
-</nav>
-
-<!-- Customer Questions -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-5">
+        <p style="text-align:center">Ordering System</p>
+    </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand">Inner Banks Paint & Decorating</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav navbar-right dropdown">
+                    <li>
+                        <a href="javascript: updateCart()" class="dropbtn">
+                            <span class="glyphicon glyphicon-shopping-cart"></span>&nbspCart
+                        </a>
+                    </li>
+                    <div id="cartMenu" onClick="updateCart()" class="dropdown-menu dropdown-content">
+                    </div>
+                </ul>
+            </div>
+    </nav>
+    <!-- Customer Questions -->
+    <div class="container">
+        <div class="row">
             <h1>Customer Questions</h1>
             <hr>
         </div>
     </div>
-</div>
-<form action="/questions" method="POST">
-<div class="container"> 
-  <div class="row">
-    <div class="col-sm-3">
-      <Strong>Where are you painting?</Strong></br>
-        <select class="form-control">
-            <option value="...">...</option>
-            <option value="Exterior">Exterior</option>
-            <option value="Interior">Interior</option>
-            </select>
-    </div>
-    <div class="col-sm-3">
-        <label for="comment"> What are you painting?</label>
-          <textarea class="form-control" rows="5" id="comment"></textarea>
-      </div>
-  </div>
-</div><br>
-
- <div class="container">    
-  <div class="row">
-    <div class="col-sm-3">
-        <Strong>Do you have a painter?</Strong></br>
-        <label class="radio-inline"><input type="radio" name="optradio">Yes</label>
-        <label class="radio-inline"><input type="radio" name="optradio">No</label>
-      </div>
-      <div class="col-sm-3">
-        <label for="comment"> Do you have any questions for us?</label>
-          <textarea class="form-control" rows="5" id="comment"></textarea>
-      </div>
-  </div>
-</div><br><br>
-<script src="assets/js/script.js"></script>
-<footer class="container-fluid text-center">
-    <a href="/shipping"><button type="submit" class="btn btn-danger">Next</button></a>
-</footer>
-</form>
+    <form action="/questions" method="POST">
+        <div class="container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <Strong>Where are you painting?</Strong><br>
+                        <select class="form-control" name="ddlpainting">
+                            <option value="...">...</option>
+                            <option value="Exterior">Exterior</option>
+                            <option value="Interior">Interior</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="comment"> What are you painting?</label>
+                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                    </div>
+                </div>
+            </div><br><br>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <Strong>Do you have a painter?</Strong></br>
+                        <label class="radio-inline"><input type="radio" name="optradio">Yes</label>
+                        <label class="radio-inline"><input type="radio" name="optradio">No</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="comment"> Do you have any questions for us?</label>
+                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                    </div>
+                </div>
+            </div><br><br>
+        </div>
+        <script src="/assets/js/script.js"></script>
+        <footer class="container-fluid text-center">
+            <button type="submit" class="btn next-btn btn-danger">Next</button>
+        </footer>
+    </form>
 </body>
 </html>
-
