@@ -27,9 +27,9 @@ function generateOrderNumber() {
 }
 
 let transporter = nodemailer.createTransport({
-    service: 'smtp.gmail.com',
-    secure: true,
-    port: 587,
+    service: 'gmail',
+    secure: false,
+    port: 25,
     auth: {
         user: email,
         pass: password
@@ -45,7 +45,7 @@ let mailOptions = {
     to: email
 }
 
-// _id: 5ad8a8375482c9ac68a444f2,
+//	 _id: 5ad8a8375482c9ac68a444f2,
 //   session_id: '535c51c0-43de-11e8-a614-e1f006036c94',
 //   products: {},
 //   shipping: {},
@@ -67,9 +67,7 @@ let mailOptions = {
 var sendClientEmail = (data, order_id, callback) => {
     mailOptions.subject = 'IBXPaint - New Order Received';
     mailOptions.to = client_email;
-    const {full_name,phone_number,email_address,delivery_info,questions} = 1
-    let itemlist = ""
-    for (var a in Object.keys(data.products)) a.charAt(1)
+    
     mailOptions.html = 
 `<html>
     <head>
@@ -99,18 +97,18 @@ var sendClientEmail = (data, order_id, callback) => {
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Customer Information:</h3>
-			${full_name}<br>
-			${phone_number}<br>
-			${email_address}<br>
-			${delivery_info}<br>
-			${questions}<br></p>
+			${1}<br>
+			${1}<br>
+			${1}<br>
+			${1}<br>
+			${1}<br></p>
 			
 			<p style="
 				font-family: 'Arial';
 				margin: 0;">
 			<h3>Order Information:</h3>
 			Order Number: ${order_id}
-			${itemlist}
+			${JSON.stringify(data,null,3)}
 			</p>
 			
 			<p style="
@@ -130,13 +128,18 @@ var sendClientEmail = (data, order_id, callback) => {
 		</div>
 	</body>
 <html>`
+
+    transporter.sendMail(mailOptions, (err,info) => {
+        if(err) console.log(err)
+        else if(callback) return callback(info)
+        console.log("emailing done")
+    })
 }
 
 // send the password email to the user
-var sendUserEmail = (user_email, data, callback) => {
+var sendUserEmail = (user_email, data, order_id, callback) => {
     mailOptions.subject = 'IBXPaint - Order Confirmation';
     mailOptions.to = user_email;
-    const {order_id,itemlist} = data;
     mailOptions.html = 
 `<html>
     <head>
@@ -168,7 +171,7 @@ var sendUserEmail = (user_email, data, callback) => {
 			<p style="
 				font-family: "Arial";
 				margin: 0;">
-			Your Order Number is: ${1}</p>
+			Your Order Number is: ${order_id}</p>
 			
 			<br>
 			<br>
@@ -177,7 +180,7 @@ var sendUserEmail = (user_email, data, callback) => {
 				font-family: "Arial";
 				margin: 0;">
 				Your Order Reciept:<br>
-				${1}
+				${JSON.stringify(data,null,3)}
 				</p>
 			
 			<br>
@@ -203,18 +206,16 @@ mailer.sendEmails = function(session_id,cb) {
 	let order_id = generateOrderNumber()
 	db.find('session_data', {session_id:session_id},
 	(insert,err) => {
-		if(!insert)
-			console.log("SESSION NOT FOUND ERROR",err,insert)
-		else {
+		if(err) console.log("SESSION NOT FOUND ERROR",err,insert)
+		else if(insert.view) {
+			// Create official order
 			db.create('orderDetails',{data:insert, order_id: order_id})
-			console.log("FORM DATA", insert)
-			sendUserEmail(insert.billing.email, insert, cb)
-			sendClientEmail(insert.view)
+			// Send email to user
+			sendUserEmail(insert.billing.email, insert, order_id)
+			// Send email to client
+			sendClientEmail(insert.view,order_id,cb)
 		}
 	})
-	// let cb = (r) => console.log(r)
-	// sendClientEmail(data,cb)
-	// sendUserEmail(user_email,data, cb)
 }
 
 module.exports = mailer;

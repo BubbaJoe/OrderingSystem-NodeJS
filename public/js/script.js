@@ -26,6 +26,7 @@ function updateCart(form_data){
             $("#cartMenu").append(`<div class="c_item"><img style="height:45px;float:left;margin-top:5px;margin-bottom:5px;" class="c_img" src="assets/img/paint/${pArr[i]}.png"><span>Quantity: ${data[pArr[i]]}</span><button style="float:right" onClick="removeItem('${pArr[i]}')">X</button></div>`)
             if(i != (pArr.length - 1)) $("#cartMenu").append(`<br><br>`)
           }
+          let refills = $("#")
         } else {
           console.log("UPDATE CART ERROR",data)
         }

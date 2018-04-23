@@ -1,4 +1,6 @@
 package-lock.json
 node_modules
 .c9
-nginx/site-enables
+pkg
+src
+app/npm-debug.log.*

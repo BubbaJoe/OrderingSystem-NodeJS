@@ -17,23 +17,35 @@ const express =   require('express'),
 
 let app =  express();
 
-//TODO: FRONT END: Text box sizable, Update validation,
-//TODO:   Center, Change & Add button names, update links
-//TODO: BACK END: Mailer, update database functions
-
 process.setMaxListeners(0);
 app.use(parser());
 app.use(form());
 
-/* ------------- Routes ---------------- */
+/* ------------------ Routes ------------------- */
 
-// Static
-app.use('/assets', express.static('../public'))
-
-// checks every request to make sure the 
+// 
 app.use(function(req, res, next) {
   if (!getSession(req)) setSession(req, res)
   next()
+})
+
+// Checks every request to make sure the 
+app.post(function(req, res, next) {
+  if (getSession(req)) {
+    db.find('session_data',
+    {session_id:getSession(req)},
+    (r,err) => {
+      if(err) {
+        res.cookie('session_id', '', { maxAge: -1 })
+        res.redirect('/home')
+        return
+      }
+      console.log("Post Information",r.view)
+      if(Object.keys(r.view.products).length == 0)
+        res.redirect('/home')
+      else next()
+    })
+  }
 })
 
 // Landing Page
@@ -41,64 +53,67 @@ app.get('/', function(req, res) {
   res.redirect('/home')
 });
 
-app.get('/nosession', function(req, res) {
-  // if the user's session is valid
-  // perform session checking
+// 
+app.get('/invalidsession', function(req, res) {
+  removeSession(res, getSession())
   res.redirect('/home')
 });
 
+// 
 app.post('/products', function(req, res) {
   // Update the session time
   res.redirect("questions")
 });
 
+// 
 app.post('/questions', function(req, res) {
   let questions = req.fields;
-  db.update('session_data',{
-    session_id: getSession(req)
-  },{
-    questions: questions,
-    timestamp: Date.now()
-  },() => {
-    res.redirect("/shipping")
-  });
+  db.update('session_data',
+    {session_id: getSession(req)},
+    {questions: questions,
+    timestamp: Date.now()},
+    () => {
+      res.redirect("/shipping")
+    });
 });
 
+// 
 app.post('/billing', function(req, res) {
   let billing = req.fields, sid = getSession(req);
-  console.log()
-  db.update('session_data',{
-    session_id: sid
-  },{
-    billing: billing,
-    timestamp: Date.now()
-  },() => {
-    // Sends emails
-    mailer.sendEmails(sid,
+  db.update('session_data',
+    {session_id: sid},
+    {billing: billing,
+    timestamp: Date.now()},
     () => {
-      removeSession(res, sid)
-    })
-    res.redirect("/thankyou")
+      mailer.sendEmails(sid, () => {
+        removeSession(res, sid);
+      });
+      res.redirect("/thankyou");
   });
 });
 
+// 
 app.post('/shipping', function(req, res) {
   let shipping = req.fields;
-  db.update('session_data',{
-    session_id: getSession(req)
-  },{
-    shipping: shipping,
-    timestamp: Date.now()
-  },() => {
-    res.redirect("billing")
-  });
+  db.update('session_data',
+    {session_id: getSession(req)},
+    {shipping: shipping,
+    timestamp: Date.now()},
+    () => {res.redirect("billing")});
 });
 
+// Possible last page before end? Confirm order page?
+app.post('/review', function(req, res) {
+  res.send('')
+})
+
+// 
 app.post('/submit', function(req, res) {
   mailer.sendEmails(getSession(req));
   res.redirect("thankyou");
 });
 
+// View
 app.get('/home', function(req, res) {
   sendView(res,"home.html")
 });
@@ -123,22 +138,18 @@ app.get('/thankyou', function(req, res) {
   sendView(res,"thankyou.html")
 });
 
-// RESTful
+// Cart System
 app.get('/viewCart', function(req, res) {
   var id = getSession(req)
   if(id) db.find("session_data",{session_id:id}, (r,err) => {
     if(!res.headersSent) {
-      console.log("view cart",r)
       if (err) res.json({error:err})
       else if(!r) res.json({error:"No session found"})
       else {
         if (Object.keys(r).length > 0) res.json(r.products)
         else res.json({error:"No items"})
       }
-    } else {
-      console.log("ERR","Headers already sent")
-      res.status(503)
-    }
+    } else console.log("viewCart error")
   }); else res.json({error:"No session id"})
 });
 
@@ -147,40 +158,33 @@ app.post('/updateCartItems', function(req, res) {
     let data = {}
     // Checks to see which keys have a value that is not ""
     for(let item in req.fields)
-      if (req.fields[item] != "")
+      if (req.fields[item] != "0")
         data[item] = req.fields[item]
     // Finds and updates the data if data was set
     db.findUpdate("session_data",{session_id: getSession(req)},{$set: {products: data}},(r) => {
-      // if (r && r.value && r.value.products != "") res.json(data)
-      res.status(200)
+      if (r && r.value && r.value.products != "") res.json(r.value.products)
     })
   } else {
-    console.log("ERROR", req.fields)
+    console.log("updateCartItems error")
     res.json({error:"No fields"})
-    res.status(404)
   }
 });
 
 app.get('/removeCartItem/:item_id',function (req, res) {
   let id = req.params.item_id, sid = getSession(req)
   if(!id || !sid) return res.status(400).send("Incorrect format")
-  db.find('session_data',{session_id:sid},(r)=> {
-    if(r) {
+  db.find('session_data',{session_id:sid},
+  function(r, err) {
+    if(err) res.json({error:"session error"})
+    else {
       delete r.products[id]
-      db.findUpdate('session_data',{session_id:sid},{$set:{products:r.products}},() => res.json({}))
-    } else {
-      res.status(401)
+      db.findUpdate('session_data',
+        {session_id:sid},
+        {$set:{products:r.products}},
+        () => res.json({}))
     }
   })
 })
-
-app.get('/getItem/:id', function(req, res) {
-  if(!req.params.id) return
-  let id =  req.params.id
-  db.find("inventory",{itemid:id},(r) => {
-    res.json(r)
-  })
-});
 
 app.get('/getItems', function(req, res) {
   db.find("inventory",{},(r) => {
@@ -193,22 +197,18 @@ app.get('/getItems', function(req, res) {
 function setSession(req, res) {
   let id = uuid();
   db.create("session_data", {
-      session_id: id,
-      products: {},
-      shipping: {},
-      billing: {},
-      questions: {},
-      timestamp: Date.now()
+      session_id: id, products: {},
+      shipping: {}, billing: {},
+      questions: {}, timestamp: Date.now()
     }, (r, err) => {
-      if (err) console.log("SESSION CREATE ERR",err)
-      else console.log("SESSION CREATED",r)
+      if (err) console.log("Could not create session")
     });
   res.cookie('session_id', id, { maxAge: 1000000 });
 }
 
 function getSession(req) {
   let sid = req.cookies.session_id
-  return (sid) ? sid : undefined;
+  return (sid) ? sid : "";
 }
 
 function removeSession(res, id) {
@@ -221,15 +221,21 @@ function sendView(res, filename) {
 }
 
 // Application arguments
-let port = 8080, ip = "0.0.0.0";
-if (process.argv.length > 2)
-    port = parseInt(process.argv[2]);
+let port = 8080, ip = "0.0.0.0",
+args = process.argv;
 
 if(process.env.IP)
   ip = process.env.IP
 
-if(process.argv.includes('-p'))
+if(args.includes('-p')) {
   ip = "127.0.0.1"
+  let index = args.indexOf('-p')
+  if (index > -1) args.splice(index, 1)
+}
 
-app.listen(port, ip,
-  ()=>console.log("server started on port: "+port+" on "+ip+" with version:"+process.version));
+if (args.length > 2)
+    port = parseInt(process.argv[2]);
+
+app.listen(port, ip, () => 
+  console.log(`Serving at ${ip}:${port}`)
+);

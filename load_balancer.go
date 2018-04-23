@@ -1,0 +1,157 @@
+/*
+   @author Joe Williams
+   Software Engineering 2: East Carolina University
+   IBX Paint: Ordering Sysyem
+   load_balancer.go - Starts the apps the specified ports and
+	then proxies request to them
+*/
+
+package main
+
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"os/exec"
+	"strings"
+	"sync"
+)
+
+// Multiplexer Proxy
+type MuxProxy struct {
+	urls    []*url.URL
+	proxies []*httputil.ReverseProxy
+	index   int
+	max     int
+}
+
+// Create a new Multiplexer Proxy, and initializes the data with an array of URLs
+func NewMuxProxy(rawurls []string) *MuxProxy {
+	l := len(rawurls)
+	urls := make([]*url.URL, l)
+	proxies := make([]*httputil.ReverseProxy, l)
+	for i, rawurl := range rawurls {
+		u, e := url.Parse(rawurl)
+		if e != nil {
+			log.Fatal("URL Parse Error", e)
+		}
+		urls[i] = u
+		proxies[i] = httputil.NewSingleHostReverseProxy(u)
+	}
+	return &MuxProxy{urls, proxies, 0, l}
+}
+
+// Proxy to server
+func (p *MuxProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	index := p.Switcher()
+	log.Println("Proxy Server:", p.urls[index], "From:", r.RemoteAddr, "-", r.URL)
+	p.proxies[index].ServeHTTP(w, r)
+}
+
+// Switches between proxies
+func (p *MuxProxy) Switcher() int {
+	p.index += 1
+	if p.index == p.max {
+		p.index = 0
+	}
+	return p.index
+}
+
+// Settings for the Multiplexer Proxy
+type Settings struct {
+	Host     string   `json:"host"`
+	Protocol string   `json:"protocol"`
+	Format   string   `json:"format"`
+	Ports    []string `json:"ports"`
+}
+
+// Runs a command and prints out it's output
+func RunCommand(cmd string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	args := strings.Fields(cmd)
+	id := args[2:3]
+	app := exec.Command(args[0], args[1:]...)
+	stdout, err := app.StdoutPipe()
+	stderr, err := app.StderrPipe()
+	if err != nil {
+		log.Fatal(id, err)
+	}
+	if err := app.Start(); err != nil {
+		log.Fatal(id, err)
+	}
+	// Prints out the output and errors for the app
+	go ReadWrite(id, stdout)
+	go ReadWrite(id, stderr)
+	// Waits for the app to close
+	app.Wait()
+	fmt.Println(id, "Closed")
+}
+
+// Reads from the io.Reader and outputs the data with the id as the Header
+func ReadWrite(id []string, out io.Reader) {
+	rdr := bufio.NewReader(out)
+	line := ""
+	for {
+		// Reads a line from the output
+		buf, part, err := rdr.ReadLine()
+		if err != nil {
+			// Error Checking
+			if err == io.EOF {
+				continue
+			}
+			break
+		}
+		// Adds the line to temp variable
+		line += fmt.Sprintf("%s", buf)
+		// If the line isn't partial, print the temp var
+		// else keep adding to the temp var
+		if !part {
+			fmt.Printf("%s> %s\n", id, line)
+			line = ""
+		}
+	}
+}
+
+func main() {
+	// Parse files
+	filedata, err := ioutil.ReadFile("settings.json")
+	if err != nil {
+		panic(err)
+	}
+	// JSON to Struct
+	var options Settings
+	if err := json.Unmarshal(filedata, &options); err != nil {
+		panic(err)
+	}
+	// Dynamic programming stuff
+	var wg sync.WaitGroup
+	num_ports := len(options.Ports)
+	wg.Add(num_ports)
+	cmds := make([]string, num_ports)
+	urls := make([]string, num_ports)
+	for i := 0; i < num_ports; i++ {
+		urls[i] = fmt.Sprintf("%s://%s:%s",
+			options.Protocol,
+			options.Host,
+			options.Ports[i])
+		cmds[i] = fmt.Sprintf(options.Format,
+			options.Ports[i])
+		go RunCommand(cmds[i], &wg)
+	}
+	// Server stuff
+	fs := http.FileServer(http.Dir("public"))
+	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "favicon.ico")
+	})
+	http.Handle("/assets/", http.StripPrefix("/assets", fs))
+	http.Handle("/", NewMuxProxy(urls))
+	log.Printf("Load balancing on 8080 to %d different processes", len(urls))
+	go http.ListenAndServe(":8080", nil)
+	wg.Wait()
+}
