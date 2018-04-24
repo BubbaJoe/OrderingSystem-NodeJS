@@ -68,6 +68,13 @@ var sendClientEmail = (data, order_id, callback) => {
     mailOptions.subject = 'IBXPaint - New Order Received';
     mailOptions.to = client_email;
     
+    const {products, shipping, billing, questions, timestamp} = data
+    const {delivery, name, date, address, city, statename, zipname} = shipping
+    if(billing.cardoption != "") var {cardoption, phone} = billing
+    else var {cardoption, phone, email, cardnum, month, year, baddress, bcity, bzip, bstate} = billing
+    const {whatpaint, wherepaint, askanything} = questions
+	const timeOfOrder = new Date(timestamp)
+	
     mailOptions.html = 
 `<html>
     <head>
@@ -205,15 +212,18 @@ var sendUserEmail = (user_email, data, order_id, callback) => {
 mailer.sendEmails = function(session_id,cb) {
 	let order_id = generateOrderNumber()
 	db.find('session_data', {session_id:session_id},
-	(insert,err) => {
+	(insert, err) => {
 		if(err) console.log("SESSION NOT FOUND ERROR",err,insert)
-		else if(insert.view) {
+		else if(insert) {
 			// Create official order
-			db.create('orderDetails',{data:insert, order_id: order_id})
+			db.remove("session_data", {session_id: session_id});
+			db.create('order_details',{details:insert, order_id: order_id})
 			// Send email to user
 			sendUserEmail(insert.billing.email, insert, order_id)
 			// Send email to client
-			sendClientEmail(insert.view,order_id,cb)
+			sendClientEmail(insert,order_id,cb)
+		} else {
+			console.log("ERROR: COULD NOT SEND EMAIL!",insert)
 		}
 	})
 }

@@ -11,6 +11,10 @@ textarea {
     resize: none;
 }
 
+select{
+  border:none!important;
+}
+
 .navbar {
   margin-bottom: 50px;
   border-radius: 0;
@@ -103,8 +107,8 @@ h2{
 
 @media only screen and (max-width: 1200px) {
   .p_img {
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
   }
   .container {
     width: 100%;

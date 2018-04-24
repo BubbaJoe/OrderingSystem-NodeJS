@@ -50,7 +50,7 @@ func NewMuxProxy(rawurls []string) *MuxProxy {
 // Proxy to server
 func (p *MuxProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	index := p.Switcher()
-	log.Println("Proxy Server:", p.urls[index], "From:", r.RemoteAddr, "-", r.URL)
+	log.Println("To:", p.urls[index], "From:", r.RemoteAddr, "-", r.URL)
 	p.proxies[index].ServeHTTP(w, r)
 }
 
@@ -90,7 +90,9 @@ func RunCommand(cmd string, wg *sync.WaitGroup) {
 	go ReadWrite(id, stderr)
 	// Waits for the app to close
 	app.Wait()
-	fmt.Println(id, "Closed")
+	fmt.Println(id, "Restarting Server")
+	wg.Add(1)
+	go RunCommand(cmd, wg)
 }
 
 // Reads from the io.Reader and outputs the data with the id as the Header
@@ -118,7 +120,7 @@ func ReadWrite(id []string, out io.Reader) {
 	}
 }
 
-func main() {
+func MuxProxyParseJSON() (*MuxProxy, sync.WaitGroup) {
 	// Parse files
 	filedata, err := ioutil.ReadFile("settings.json")
 	if err != nil {
@@ -132,7 +134,6 @@ func main() {
 	// Dynamic programming stuff
 	var wg sync.WaitGroup
 	num_ports := len(options.Ports)
-	wg.Add(num_ports)
 	cmds := make([]string, num_ports)
 	urls := make([]string, num_ports)
 	for i := 0; i < num_ports; i++ {
@@ -142,16 +143,22 @@ func main() {
 			options.Ports[i])
 		cmds[i] = fmt.Sprintf(options.Format,
 			options.Ports[i])
+		wg.Add(1)
 		go RunCommand(cmds[i], &wg)
 	}
+	return NewMuxProxy(urls), wg
+}
+
+func main() {
 	// Server stuff
 	fs := http.FileServer(http.Dir("public"))
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "favicon.ico")
 	})
 	http.Handle("/assets/", http.StripPrefix("/assets", fs))
-	http.Handle("/", NewMuxProxy(urls))
-	log.Printf("Load balancing on 8080 to %d different processes", len(urls))
+	mprox, wg := MuxProxyParseJSON()
+	http.Handle("/", mprox)
+	log.Printf("Load balancing on 8080 to %d different processes", mprox.max)
 	go http.ListenAndServe(":8080", nil)
 	wg.Wait()
 }

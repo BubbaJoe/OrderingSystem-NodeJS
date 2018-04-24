@@ -86,8 +86,9 @@ app.post('/billing', function(req, res) {
     timestamp: Date.now()},
     () => {
       mailer.sendEmails(sid, () => {
-        removeSession(res, sid);
+        //Do somethen when the emails are sent
       });
+      removeSession(res);
       res.redirect("/thankyou");
   });
 });
@@ -211,9 +212,8 @@ function getSession(req) {
   return (sid) ? sid : "";
 }
 
-function removeSession(res, id) {
+function removeSession(res) {
   res.cookie('session_id', '', { maxAge: -1 });
-  db.remove("sessions", {session_id: id});
 }
 
 function sendView(res, filename) {

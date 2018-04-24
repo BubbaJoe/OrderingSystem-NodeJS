@@ -17,16 +17,19 @@ function updateCart(form_data){
         if(data.error || Object.keys(data).length == 0) {
           console.log("ERR",data.error)
           $("#cartMenu").html("")
-          $("#cartMenu").append("<p style='text-align: center' class='c_item'>No items in cart</p>")
+          $("#cartMenu").append("<p style='text-align:center;margin-top:10px;' class='c_item'>No items in cart</p>")
         } else if(data) {
           // Removes all items from the cart
           let pArr = Object.keys(data)
           $("#cartMenu").html("")
           for(var i = 0; i < pArr.length; i++) {
-            $("#cartMenu").append(`<div class="c_item"><img style="height:45px;float:left;margin-top:5px;margin-bottom:5px;" class="c_img" src="assets/img/paint/${pArr[i]}.png"><span>Quantity: ${data[pArr[i]]}</span><button style="float:right" onClick="removeItem('${pArr[i]}')">X</button></div>`)
+            let refill = $(`select[name='${pArr[i]}']`)[0]
+            if(refill) refill.options.selectedIndex = data[pArr[i]]
+            console.log("ref",refill)
+            //Remove Button: <button style="float:right" onClick="removeItem('${pArr[i]}')">X</button>
+            $("#cartMenu").append(`<div class="c_item"><img style="height:45px;float:left;margin-top:5px;margin-bottom:5px;" class="c_img" src="assets/img/paint/${pArr[i]}.png"><span>Quantity: ${data[pArr[i]]}</span><br><span>Price: $${data[pArr[i]]*39.99}</span><!-- Remove Button --></div>`)
             if(i != (pArr.length - 1)) $("#cartMenu").append(`<br><br>`)
           }
-          let refills = $("#")
         } else {
           console.log("UPDATE CART ERROR",data)
         }
@@ -88,12 +91,12 @@ for(let i = 0; i < selList.length; i++) {
     imgs[i].style.margin = "auto auto"
     reloadImg(imgs[i],originalImage,1000)
   }
-  
+
   selList[i].onchange = function(e) {
     let num = selList[i].value//, item = selList[i].name
     if(num == "") return
     updateCart($("#products_form").serializeArray())
-    $.toaster({ priority : 'success',
+    $.toaster({ priority : 'danger',
       title : `${(num != 1)?"Items":"Item"} added to cart!`,
       message : `You selected ${num} ${(num != 1)?"buckets":"bucket"}`})
   }
