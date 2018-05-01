@@ -40,9 +40,9 @@
         <div class="container">
             <h1>Payment Information</h1>
             <hr>
-            <input onchange="hideFunction()" type="radio" class="form-group" id="cd" name="cardoption" checked> Credit/Debit
+            <input onchange="hideFunction()" type="radio" class="form-group" id="cd" name="payment" value="card" checked> Credit/Debit
             &nbsp
-            <input onchange="hideFunction()" type="radio" class="form-group" id="cash" name="cardoption"> Cash
+            <input onchange="hideFunction()" type="radio" class="form-group" id="cash" name="payment" value="cash"> Cash
             <br>
             <!---Needed for order name, date time.-->
             <div class="container" id="cashStuff">
@@ -59,6 +59,10 @@
         </div>
         <!--Credit/debit info-->
         <div class="container" id="creditStuff">
+            <div class="col-sm-6">
+                <label for="bname">Cardholder Name:</label>
+                <input required type="text" pattern="\D+" id="bname" class="form-control" value="" name="bname">
+            </div>
             <div class="col-sm-6">
                 <label for="cnumber">Card Number:</label>
                 <input required type="text" pattern="\d{12,19}" class="form-control" id="cnumber" name="cardnum">
@@ -101,20 +105,16 @@
             </div>
             <div class="col-sm-6">
                 <label for="addr">Billing Address:</label>
-                <input required type="text" class="form-control" id="address" name="address">
+                <input required type="text" class="form-control" id="address" name="baddress">
             </div>
             <div class="col-sm-6">
                 <label for="city">City:</label>
-                <input required type="text" pattern="\D+" class="form-control" id="city" name="city">
-            </div>
-            <div class="col-sm-6">
-                <label for="zip">Zip Code:</label>
-                <input required type="text" pattern="\d{5}" class="form-control" id="zip" name="zip">
+                <input required type="text" pattern="\D+" class="form-control" id="city" name="bcity">
             </div>
             <div class="col-sm-6">
                 <label required id="state" for="state">State:</label>
-                <select required class="form-control" id="state" name="state">
-                    <option value="-1">Select State</option>
+                <select required class="form-control" id="state" name="bstate">
+                    <option value="N/A">Select State</option>
                     <option value="AK">Alaska</option>
                     <option value="AL">Alabama</option>
                     <option value="AR">Arkansas</option>
@@ -169,12 +169,16 @@
                     <option value="WY">Wyoming</option>
                 </select>
             </div>
+            <div class="col-sm-6">
+                <label for="zip">Zip Code:</label>
+                <input required type="text" pattern="\d{5}" class="form-control" id="zip" name="bzip">
+            </div>
         </div>
 
         <div class="col-sm-3">
         </div><br><br>
         <footer class="container-fluid text-center">
-            <button type="submit" class="btn next-btn btn-danger">Next</button>
+            <button type="submit" class="btn next-btn btn-danger">Finish</button>
         </footer>
     </form>
     <script src="/assets/js/script.js"></script>
@@ -197,6 +201,7 @@
             if (document.getElementById("cd").checked) {
                 //alert("Delivery selected");
                 x.style.display = "block"; //block makes its visible
+                bname.required = true
                 card.required = true;
                 month.required = true;
                 year.required = true;
@@ -208,6 +213,7 @@
             } else if (document.getElementById("cash").checked) {
                 //alert("Pickup selected");
                 x.style.display = "none"; //none makes it hide
+                bname.required = false
                 card.required = false;
                 month.required = false;
                 year.required = false;

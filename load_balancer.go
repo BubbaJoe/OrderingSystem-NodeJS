@@ -92,7 +92,7 @@ func RunCommand(cmd string, wg *sync.WaitGroup) {
 	app.Wait()
 	fmt.Println(id, "Restarting Server")
 	wg.Add(1)
-	go RunCommand(cmd, wg)
+	//go RunCommand(cmd, wg)
 }
 
 // Reads from the io.Reader and outputs the data with the id as the Header

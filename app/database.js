@@ -33,10 +33,7 @@ database.findUpdate = function(colString, find, update, callback) {
       find,
       update,
       {returnNewDocument: true}
-      ).then((r) => {
-        callback(r)
-        console.log(r)
-      })
+      ).then((r) => callback(r))
   });
 }
 

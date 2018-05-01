@@ -2,7 +2,7 @@
     @author Joe Williams
     Software Engineering 2: East Carolina University
     IBX Paint: Ordering Sysyem
-    app.js - Creates the server, and initializes all data.
+    app.js - Creates the server, and initializes modules.
 */
 
 'use strict';
@@ -11,8 +11,8 @@ const express =   require('express'),
   uuid =          require('uuid/v1'),
   parser =        require('cookie-parser'),
   form =          require('express-formidable'),
-  db =            require('./database.js'),
   path =          require('path'),
+  db =            require('./database.js'),
   mailer =        require('./mailer.js');
 
 let app =  express();
@@ -23,9 +23,10 @@ app.use(form());
 
 /* ------------------ Routes ------------------- */
 
-// 
+// If the user has no sesh, GIVE 'EM A SESH!
 app.use(function(req, res, next) {
-  if (!getSession(req)) setSession(req, res)
+  if (!getSession(req)) 
+    setSession(req, res)
   next()
 })
 
@@ -62,7 +63,17 @@ app.get('/invalidsession', function(req, res) {
 // 
 app.post('/products', function(req, res) {
   // Update the session time
-  res.redirect("questions")
+  db.find('session_data',
+  {session_id:getSession(req)},
+    (r,err) => {
+      if(err) return res.redirect("/home?err=session")
+      let len = Object.keys(r["products"] || {}).length
+      if(len > 0)
+        res.redirect("/questions")
+      else {
+        res.redirect("/products/?err=sel_prod")
+      }
+  });
 });
 
 // 
@@ -85,9 +96,7 @@ app.post('/billing', function(req, res) {
     {billing: billing,
     timestamp: Date.now()},
     () => {
-      mailer.sendEmails(sid, () => {
-        //Do somethen when the emails are sent
-      });
+      mailer.sendEmails(sid);
       removeSession(res);
       res.redirect("/thankyou");
   });
@@ -233,8 +242,7 @@ if(args.includes('-p')) {
   if (index > -1) args.splice(index, 1)
 }
 
-if (args.length > 2)
-    port = parseInt(process.argv[2]);
+if (args.length > 2) port = parseInt(process.argv[2]);
 
 app.listen(port, ip, () => 
   console.log(`Serving at ${ip}:${port}`)

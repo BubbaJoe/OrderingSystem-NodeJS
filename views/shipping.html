@@ -43,8 +43,8 @@
         <div class="container" name="shipping">
             <h1>Delivery or Pick Up?</h1>
             <hr>
-            <input onchange="showFunction()" type="radio" class="form-group" id="deliveryb" name="delivery" checked> Delivery &nbsp
-            <input onchange="showFunction()" type="radio" class="form-group" id="pickupb" name="delivery"> Pick Up &nbsp
+            <input onchange="showFunction()" type="radio" class="form-group" id="deliveryb" name="order" value="delivery" checked> Delivery &nbsp
+            <input onchange="showFunction()" type="radio" class="form-group" id="pickupb" name="order" value="pick up"> Pick Up &nbsp
             <br>
             <!---Needed for order name, date time.-->
             <div class="row" id="pickupStuff">
@@ -58,9 +58,9 @@
                     Desired Date:
                     <input type="date" required id="date" class="form-control" name="date">
                 </div>
-                <div class="col-sm-6" id="time">
+                <div class="col-sm-6" id="pickupStuff">
                     Desired Time:
-                    <select class="form-control">
+                    <select class="form-control" id="time" name="time">
                         <option value="7am">7am</option>
                         <option value="8am">8am</option>
                         <option value="9am">9am</option>
